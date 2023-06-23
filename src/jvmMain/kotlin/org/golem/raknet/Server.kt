@@ -21,7 +21,7 @@ import java.net.InetSocketAddress
 import java.util.*
 import kotlin.collections.HashMap
 
-const val CURRENT_PROTOCOL_VERSION: Byte = 10
+const val CURRENT_PROTOCOL_VERSION: Byte = 11
 
 class Server(
     val port: Int = 19132,

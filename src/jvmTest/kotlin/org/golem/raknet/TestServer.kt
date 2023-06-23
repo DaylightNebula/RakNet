@@ -44,13 +44,41 @@ class PersonalConnection(
     private fun handleMessage(message: OnlineMessage) {
         log("Received message: $message")
         if(message.id != 0xFE) {
+            println("Incoming message was not 0xFE")
             return
         }
+
+        // unpack message for debugging purposes
+        when(message) {
+            is UserMessage -> {
+                handleUserMessage(message)
+            }
+            else -> println("Unknown input message in test")
+        }
+
+        // send back random packet (I think)
         val bytes = arrayOf<Byte>(0x63, 0x65, 0x62, 0x60, 0x60, 0x60, 0x04, 0x00).toByteArray()
         val buffer = ByteBufAllocator.DEFAULT.ioBuffer()
         buffer.writeBytes(bytes)
         val status = UserMessage(0xFE, buffer)
         connection.send(status, true)
+    }
+
+    private fun handleUserMessage(message: UserMessage) {
+        val buffer = message.buffer
+        println("User message bytes: ${buffer.readableBytes()}")
+        (0 until buffer.readableBytes()).forEach {
+            val byte = buffer.getByte(it)
+            print(byte.toUInt().toString(16).padStart(2, '0'))
+            print(" ")
+        }
+        // TODO uncompress with zlib before print
+
+//        buffer.forEach {
+//            print(it.toUInt().toString(16).padStart(2, '0'))
+//            print(" ")
+//        }
+        println()
     }
 
     private fun handleDisconnect() {
